@@ -1,0 +1,92 @@
+<% content_for :page_title, @review.title %>
+
+<%= image_tag  @review.photo.url %>
+
+<h1> <%= @review.title %></h1>
+
+<h2> <%= @review.restaurant %></h2>
+
+<% if is_logged_in? %>
+  <%# book the actual review %>
+  <% if @review.bookmarks.where(user: @current_user).any? %>
+    <%= link_to "unbookmark", review_bookmark_path(@review), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} %>
+  <% else %>
+    <p>
+      <%= link_to "Bookmark", review_bookmark_path(@review), data: {turbo_method: :post} %>
+    </p>
+
+  <% end %>
+<% end %>
+
+
+
+
+<div class="score">
+    <%= @review.score %> /10
+</div>
+
+<div>
+  Posted by: 
+  <% if @review.user.present? %>
+      <%= @review.user.username %>
+  <% else %>
+      anonymous
+  <% end %>
+</div>
+
+
+
+
+<% if @review.ambiance.present? %>
+  <div class="ambiance">
+      Ambiance: <%= @review.ambiance %>
+  </div>
+<% end %>
+
+<% if @review.cuisine.present? %>
+  <div class="cuisine">
+    Cuisine  <%= @review.cuisine %>
+  </div>
+<% end %>
+
+<% if @review.price.present? %>
+  <div class="price">
+    Price  <%= @review.price %>
+  </div>
+<% end %>
+
+<div class="body">
+    <%= simple_format @review.body %>
+</div>
+
+
+
+<%# edit or delete if the review is by the actual current user being login %>
+<% if @review.user == @current_user %>
+  <div class="actions">
+    <% if @review.created_at > 1.hour.ago %>
+
+      <%= link_to "Edit this review", edit_review_path(@review) %>
+
+    <% end %>
+
+    <%= link_to 'Delete this review', review_path(@review), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} %>
+  </div>
+<% end %>
+
+
+
+<%# <h3> Comments </h3> %>
+
+<%# <% @review.comments.each do |comment| %> 
+  <%# <div class="comments"> %>
+    <%# <%= simple_format comment %> 
+  <%# </div> %>
+<%# <% end %>
+
+<h3> Add a comment</h3>
+
+<%= simple_form_for [@review, Comment.new] do |f| %>
+  <%= f.input :body %>
+  <%= f.button :submit, "Add comment" %>
+<% end %>

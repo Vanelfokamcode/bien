@@ -1,0 +1,37 @@
+<% content_for :page_title, "Homepage" %>
+
+<nav class= "filters">
+    <%= simple_active_link_to "All Restaurants", root_path, active: {price: nil, location: nil, cuisine: nil} %>
+    <div>
+        <%= simple_active_link_to "$", root_path(price: 1, cuisine: @cuisine, location: @location), active: {price: 1} %>
+        <%= simple_active_link_to "$$", root_path(price: 2, cuisine: @cuisine, location: @location), active: {price: 2}%>
+        <%= simple_active_link_to "$$$", root_path(price: 3, cuisine: @cuisine, location: @location), active: {price: 3}%>
+    </div>
+
+    <div>
+        <%= simple_active_link_to "Mexican", root_path(cuisine: "Mexican", price: @price, location: @location), active: {cuisine: "Mexican" }%>
+        <%= simple_active_link_to "American", root_path(cuisine: "American", price: @price, location: @location), active: {cuisine: "American" } %>
+        <%= simple_active_link_to "Indian", root_path(cuisine: "Indian", price: @price, location: @location), active: {cuisine: "Indian" } %>
+    </div>
+
+    <form action ="/">
+        <input type="text" name="location" 
+        placeholder ="Seach location..."
+        value="<%= @location %>  "/>
+        <input type="hidden" name="price" value="<%= @price %>"/>
+        <input type="hidden" name="cuisine" value="<%= @cuisine %>"/>
+    </form>
+</nav>
+
+
+
+
+<% @reviews.each do |review| %>
+    <div class = "review"> 
+        <%= link_to review_path(review) do %>
+            <%# <%= image_tag  @review.photo.url %> %>
+            <h2> <%= review.title %></h2>
+            <p> <%= review.cuisine %></p>
+        <% end %>
+    </div>
+<% end %>
